@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y \
 # Install Angular CLI globally
 RUN npm install -g @angular/cli
 
+WORKDIR /app/PandemoniumClient
+
 COPY package*.json ./
 
 FROM base AS init_builder
