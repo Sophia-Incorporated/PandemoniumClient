@@ -1,8 +1,17 @@
-FROM debian:12
+FROM debian:12 AS base
 
 LABEL clientname="PandemoniumClient"
 
 ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    nodejs \
+    npm
+
+# Install Angular CLI globally
+RUN npm install -g @angular/cli
 
 COPY package*.json ./
 
@@ -12,8 +21,8 @@ COPY src/ src/
 COPY angular.json tsconfig.json tsconfig.app.json ./
 RUN npm run build
 
-FROM base
-COPY --from=init_builder /apps/server/dist/ ./server/dist/
-COPY server/ ./server/
-WORKDIR /apps/server/
-RUN npm install
+# Expose any required ports (if necessary)
+EXPOSE 4200
+
+# Define the default command to run your application (if necessary)
+CMD ["ng", "serve", "--host", "0.0.0.0"]
